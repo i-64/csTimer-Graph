@@ -7,7 +7,7 @@ var express = require("express"),
 app.listen(8081);
 
 // server started message
-console.log("Server started at port 3000");
+console.log("Server started at port 8081");
 
 app.use(upload());
 
@@ -19,6 +19,11 @@ app.get("/",function(req,res){
 if(!fs.existsSync('./uploads')){
     fs.mkdirSync('./uploads');
 }
+
+//handle post for test
+app.get('/test',function(req,res){
+    res.send("test");
+});
 
 //handle post request
 app.post("/upload",function(req,res){
@@ -37,7 +42,9 @@ app.post("/upload",function(req,res){
             }
             else{
                 //else success
-                res.send("Successful");
+                //res.send("Successful");
+                //res.redirect('localhost:8081/test');
+                res.sendFile('html/test.html',{root:__dirname});
             }
         });
     }
