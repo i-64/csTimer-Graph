@@ -2,8 +2,54 @@ var express = require("express"),
     app = express(),
     upload = require("express-fileupload"),
     fs = require('fs'),
-    os = require('os');
+    os = require('os'),
+    cors = require('cors');
+    var _ = require('underscore');
+    let bodyParser = require('body-parser');
 
+    app.use(cors());
+    app.use(function (req, res, next) {
+
+                    // Website you wish to allow to connect
+                    res.setHeader('Access-Control-Allow-Origin', '*');
+
+                    // Request methods you wish to allow
+                    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+                    // Request headers you wish to allow
+                    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+                    // Set to true if you need the website to include cookies in the requests sent
+                    // to the API (e.g. in case you use sessions)
+                    res.setHeader('Access-Control-Allow-Credentials', true);
+
+                    // Pass to next layer of middleware
+                    next();
+                
+                });
+    app.use(bodyParser());
+/*
+function allowCrossDomain(req, res, next) {
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+
+  var origin = req.headers.origin;
+  if (_.contains(app.get('allowed_origins'), origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.send(200);
+  } else {
+    next();
+  }
+}
+
+app.configure(function () {
+  app.use(express.logger());
+  app.use(express.bodyParser());
+  app.use(allowCrossDomain);
+});
+*/
 //listen at port 8081
 app.listen(8081);
 
@@ -11,6 +57,8 @@ app.listen(8081);
 console.log("Server started at port 8081");
 
 app.use(upload());
+
+//app.use(cors({origin:'null'}));
 
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/index.html");
@@ -51,7 +99,33 @@ app.post("/upload",function(req,res){
                 //res.send("Successful");
                 //res.redirect('localhost:8081/test');
                 res.sendFile('html/graph.html',{root:__dirname});
+                // Add headers
+                /*app.use(function (req, res, next) {
+
+                    // Website you wish to allow to connect
+                    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+
+                    // Request methods you wish to allow
+                    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+                    // Request headers you wish to allow
+                    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+                    // Set to true if you need the website to include cookies in the requests sent
+                    // to the API (e.g. in case you use sessions)
+                    res.setHeader('Access-Control-Allow-Credentials', true);
+
+                    // Pass to next layer of middleware
+                    next();
+                });*/
+                /*app.use(function(req,res,next){
+                    res.header("Access-Control-Allow-Origin","*");
+                    res.header("Access-Control-Allow-Headers","Origin, X-Requested-With,Content-Type, Accept");
+                    next();
+                })*/
                 app.get('/getDataJSON',function(req,res){
+
+                    res.header("Access-Control-Allow-Origin", "*");
 
                     fs.readFile("./uploads/generated.csv", 'utf8', function (err,data) {
 
